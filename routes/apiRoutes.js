@@ -55,6 +55,8 @@ module.exports = function(app) {
     let id = req.params.id;
 
     notes = notes.filter(element => element.id !== id);
+    console.log(notes);
+    fs.writeFileSync(db, JSON.stringify(notes));
     res.json({ ok: true });
   });
 };
