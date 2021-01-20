@@ -21,8 +21,9 @@ module.exports = function(app) {
 
   app.get("/api/notes", function(req, res) {
     
-    let rawNotes = fs.readFile(db);
+    let rawNotes = fs.readFileSync(db);
     let notes = JSON.parse(rawNotes);
+    console.log(notes)
     res.json(notes);
   });
 
@@ -35,10 +36,12 @@ module.exports = function(app) {
   // ---------------------------------------------------------------------------
 
   app.post("/api/notes", function(req, res) {
-    // Note the code here. Our "server" will respond to requests and let users know if they have a table or not.
-    // It will do this by sending out the value "true" have a table
-    // req.body is available since we're using the body parsing middleware
-    db.push(req.body);
+    let rawNotes = fs.readFileSync(db);
+    let notes = JSON.parse(rawNotes);
+    let newNote = req.body;
+    notes.push(newNote)
+    console.log(notes);
+    fs.writeFileSync(db, JSON.stringify(notes));
     res.json(true);
   });
 
@@ -47,7 +50,11 @@ module.exports = function(app) {
   // Don"t worry about it!
 
   app.delete("/api/notes/:id", function(req, res) {
-    
+    let rawNotes = fs.readFileSync(db);
+    let notes = JSON.parse(rawNotes);
+    let id = req.params.id;
+
+    notes = notes.filter(element => element.id !== id);
     res.json({ ok: true });
   });
 };
